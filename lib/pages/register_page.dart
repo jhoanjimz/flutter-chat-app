@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import 'package:chat/services/auth_service.dart';
 import 'package:chat/helpers/mostrar_alerta.dart';
+import '../services/socket_service.dart';
 import '../widgets/btn_azul.dart';
 import '../widgets/custom_input.dart';
 import '../widgets/labels.dart';
@@ -20,7 +21,7 @@ class RegisterPage extends StatelessWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          child: Container(
+          child: SizedBox(
             height: MediaQuery.of(context).size.height * 0.9,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -53,6 +54,7 @@ class __FormState extends State<_Form> {
   Widget build(BuildContext context) {
     
     final authService = Provider.of<AuthService>(context);
+    final socketService = Provider.of<SocketService>(context);
     
     return Container(
       margin: const EdgeInsets.only(top: 40),
@@ -82,6 +84,7 @@ class __FormState extends State<_Form> {
               FocusScope.of(context).unfocus();
               final registerOk = await authService.register(nameCtrl.text.trim(), emailCtrl.text.trim(), passCtrl.text.trim());
               if ( registerOk == true ) {
+                socketService.connect();
                 Navigator.pushReplacementNamed(context, 'usuarios');
               } else {
                 mostrarAlerta(context, 'Registro incorrecto', registerOk);

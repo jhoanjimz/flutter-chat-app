@@ -1,5 +1,6 @@
 // ignore_for_file: unused_element, use_build_context_synchronously
 
+import 'package:chat/services/socket_service.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -20,7 +21,7 @@ class LoginPage extends StatelessWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const BouncingScrollPhysics(),
-          child: Container(
+          child: SizedBox(
             height: MediaQuery.of(context).size.height * 0.9,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -52,6 +53,7 @@ class __FormState extends State<_Form> {
   Widget build(BuildContext context) {
     
     final authService = Provider.of<AuthService>(context);
+    final socketService = Provider.of<SocketService>(context);
 
     return Container(
       margin: const EdgeInsets.only(top: 40),
@@ -76,6 +78,7 @@ class __FormState extends State<_Form> {
               FocusScope.of(context).unfocus();
               final loginOk = await authService.login(emailCtrl.text.trim(), passCtrl.text.trim());
               if ( loginOk ) {
+                socketService.connect();
                 Navigator.pushReplacementNamed(context, 'usuarios');
               } else {
                 mostrarAlerta(context, 'Login incorrecto', 'Revise sus credenciales');
